@@ -33,7 +33,7 @@ go get github.com/jpillora/pzlr@latest
 
    ```shell
    mkdir pzlr
-	cd pzlr
+   cd pzlr
    ```
 
 1. Open terminal, start leetcode problem `151` with:
@@ -98,7 +98,7 @@ go get github.com/jpillora/pzlr@latest
 1. You will need to read the question and copy the example input/outputs into the `code_test.go` file
 
    ```go
-      // for example, problem 151 would have these 2 test cases
+		// for example, here are two test cases for problem 151
 		{
 			input:  input{s: "the sky is blue"},
 			output: "blue is sky the",
