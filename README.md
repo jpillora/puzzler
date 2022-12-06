@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/jpillora/pzlr/workflows/CI/badge.svg)](https://github.com/jpillora/pzlr/actions?workflow=CI)
 
-Puzzler `pzlr(1)` is a command-line tool to locally solve programming challenges using Go (golang). Current, it supports
+Puzzler `pzlr(1)` is a command-line tool to **locally** develop solutions to various programming puzzles using Go (golang). Current, it supports
 
 * Leetcode https://leetcode.com
 * Advent of Code https://adventofcode.com
@@ -28,6 +28,12 @@ go get github.com/jpillora/pzlr@latest
 ```
 
 ### Usage
+
+See either the
+
+<details>
+<summary>
+<h3>Leetcode example: <code>pzlr leetcode 151</code></h3></summary>
 
 1. Create directory
 
@@ -129,6 +135,20 @@ go get github.com/jpillora/pzlr@latest
    ```
 
 1. Once tests are passing, you will need to copy your solution into `leetcode.com` and submit there (_TODO submit via CLI_)
+
+</details>
+
+or the 
+
+<details>
+<summary>
+<h3>Advent of Code example: <code>pzlr aoc 3</code></h3></summary>
+
+1. Foobar
+1. Foobar
+1. Foobar
+
+</details>
 
 ### TODO
 

@@ -1,7 +1,9 @@
 package pzlr
 
 import (
+	"errors"
 	"fmt"
+	"os"
 	"os/exec"
 
 	"github.com/jpillora/pzlr/internal/pzlr/aoc"
@@ -16,10 +18,17 @@ type RunWith struct {
 }
 
 func Run(w RunWith) error {
+	// must have go installed
 	if _, err := exec.LookPath("go"); err != nil {
 		return fmt.Errorf("go is not installed. you can install it\n" +
 			"  manually here: https://golang.org/doc/install\n" +
 			"  automatically with: curl https://jpillora.com/dotfiles/bin/install-go | bash")
+	}
+	// must have a go.mod file
+	if _, err := os.Stat("go.mod"); errors.Is(err, os.ErrNotExist) {
+		if out, err := exec.Command("go", "mod", "init", "pzlr").CombinedOutput(); err != nil {
+			return fmt.Errorf("go mod init failed: %s: %s", err, out)
+		}
 	}
 	switch w.Provider {
 	case "l", "leetcode":

@@ -82,6 +82,6 @@ func Run(id string, flags x.RunFlags) error {
 	if err := os.Chdir(dir); err != nil {
 		return err
 	}
-	fmt.Print("Starting gotestsum: ")
+	fmt.Print("Start dev. ")
 	return gotestsum.Run("leetcode", []string{"--watch", "--hide-summary", "skipped,failed,errors", "--format", "testname"})
 }
