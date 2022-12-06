@@ -32,7 +32,7 @@ func CreateFunc(path string, fn func() (string, error)) error {
 		if err := os.WriteFile(path, []byte(contents), 0755); err != nil {
 			return err
 		}
-		fmt.Printf("Created file %s/\n", path)
+		fmt.Printf("Created file %s\n", path)
 		return nil
 	}
 	if err != nil {

@@ -63,12 +63,20 @@ import (
 
 const input = %s
 
+func TestEg(t *testing.T) {
+	ans, err := run(input)
+	if err != nil {
+		t.Fatalf("eg => %%s\n", err)
+	}
+	t.Logf("eg => %%v\n", ans)
+}
+
 func TestPart1(t *testing.T) {
 	ans, err := run(input)
 	if err != nil {
 		t.Fatalf("part1 => %%s\n", err)
 	}
-	fmt.Printf("part1 => %%v\n", ans)
+	t.Logf("part1 => %%v\n", ans)
 }
 
 func TestPart2(t *testing.T) {
@@ -76,6 +84,6 @@ func TestPart2(t *testing.T) {
 	if err != nil {
 		t.Fatalf("part2 => %%s\n", err)
 	}
-	fmt.Printf("part2 => %%v\n", ans)
+	t.Logf("part2 => %%v\n", ans)
 }
 `
