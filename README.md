@@ -32,28 +32,27 @@ go get github.com/jpillora/pzlr@latest
 1. Create directory
 
    ```shell
-   mkdir leetcode
+   mkdir pzlr
+	cd pzlr
+   ```
+
+1. Open terminal, start leetcode problem `151` with:
+
+   ```shell
+   pzlr --open leetcode 151
+
+   Found problem #0151 https://leetcode.com/problems/reverse-words-in-a-string/
+   Created directory leetcode/0151/
+   Fetching problem code for reverse-words-in-a-string...
+   Created stub answer file leetcode/0151/code.go
+   Created stub test file leetcode/0151/code_test.go
+   Starting gotestsum: Watching 1 directories. Use Ctrl-c to to stop a run or exit.
    ```
 
 1. Open in VS Code (or another editor)
 
    ```shell
-   code leetcode
-   ```
-
-1. Open terminal and run 
-
-1. Start leetcode problem `151` with:
-
-   ```shell
-   pzlr --open leetcode 151
-
-   Fetching problem 151...
-   Found problem #0151 https://leetcode.com/problems/reverse-words-in-a-string/
-   Created directory leetcode/0151/
-   Created stub answer file leetcode/0151/code.go
-   Created stub test file leetcode/0151/code_test.go
-   Starting gotestsum: Watching 1 directories. Use Ctrl-c to to stop a run or exit.
+   code leetcode/0151
    ```
 
 1. File `leetcode/0151/code.go` will contain:

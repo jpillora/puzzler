@@ -22,9 +22,9 @@ func Run(w RunWith) error {
 			"  automatically with: curl https://jpillora.com/dotfiles/bin/install-go | bash")
 	}
 	switch w.Provider {
-	case "leetcode":
+	case "l", "leetcode":
 		return leetcode.Run(w.ID, w.Flags)
-	case "adventofcode":
+	case "a", "aoc", "adventofcode":
 		return aoc.Run(w.ID, w.Flags)
 	}
 	return fmt.Errorf("unknown provider %q", w.Provider)
