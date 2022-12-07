@@ -7,7 +7,7 @@ import (
 	"io/fs"
 	"os"
 	"os/exec"
-	"path"
+	"path/filepath"
 	"regexp"
 	"strings"
 
@@ -24,15 +24,21 @@ func Run(id string, flags x.RunFlags) error {
 	url := fmt.Sprintf("https://leetcode.com/problems/%s/", spec.Slug())
 	fmt.Printf("Found problem #%s %s\n", spec.ID(), url)
 	// create problem directory if it doesn't exist
-	dir := path.Join("leetcode", spec.ID())
+	dir := filepath.Join("leetcode", spec.ID())
 	if _, err := os.Stat(dir); errors.Is(err, fs.ErrNotExist) {
 		if err := os.MkdirAll(dir, 0755); err != nil {
 			return fmt.Errorf("problem %s dir could not be created: %w", spec.ID(), err)
 		}
 		fmt.Printf("Created directory %s/\n", dir)
 	}
+	// create README.txt if it doesn't exist
+	if err := x.CreateFunc(filepath.Join(dir, "README.txt"), func() (string, error) {
+		return fetchQuestion(url)
+	}); err != nil {
+		return err
+	}
 	// create code.go if it doesn't exist
-	codeFile := path.Join(dir, "code.go")
+	codeFile := filepath.Join(dir, "code.go")
 	if _, err := os.Stat(codeFile); errors.Is(err, fs.ErrNotExist) {
 		stub, err := getProblemCode(spec.Slug())
 		if err != nil {
@@ -46,7 +52,7 @@ func Run(id string, flags x.RunFlags) error {
 		fmt.Printf("Created stub answer file %s\n", codeFile)
 	}
 	// create code_test.go if it doesn't exist
-	testFile := path.Join(dir, "code_test.go")
+	testFile := filepath.Join(dir, "code_test.go")
 	if _, err := os.Stat(testFile); errors.Is(err, fs.ErrNotExist) {
 		buff := bytes.Buffer{}
 		process.Run(&buff, []string{codeFile}, &process.Options{
@@ -83,5 +89,5 @@ func Run(id string, flags x.RunFlags) error {
 		return err
 	}
 	fmt.Print("Start dev. ")
-	return gotestsum.Run("leetcode", []string{"--watch", "--hide-summary", "skipped,failed,errors", "--format", "testname"})
+	return gotestsum.Run("leetcode", []string{"--watch", "--format", "standard-verbose", "--hide-summary", "skipped,failed,errors"})
 }

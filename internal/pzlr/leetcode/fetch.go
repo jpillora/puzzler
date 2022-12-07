@@ -7,8 +7,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"regexp"
 	"strconv"
 
+	"github.com/PuerkitoBio/goquery"
 	"github.com/jpillora/pzlr/internal/pzlr/x"
 )
 
@@ -142,4 +144,26 @@ func getProblemCode(slug string) (code string, err error) {
 		}
 	}
 	return "", fmt.Errorf("go code snippet not found for slug: %s", slug)
+}
+
+func fetchQuestion(url string) (string, error) {
+	rc, err := x.Get(url)
+	if err != nil {
+		return "", errors.New("failed to fetch aoc description")
+	}
+	defer rc.Close()
+	doc, err := goquery.NewDocumentFromReader(rc)
+	if err != nil {
+		return "", errors.New("invalid html")
+	}
+	metaDesc := doc.Find(`meta[name="description"]`)
+	if metaDesc.Length() == 0 {
+		return "", errors.New("no meta desc")
+	}
+	c, ok := metaDesc.Attr("content")
+	if !ok {
+		return "", errors.New("no meta desc content")
+	}
+	c = regexp.MustCompile(`(?m)^[\x{25A0}\x{00A0}\s]+\n`).ReplaceAllString(c, "\n")
+	return c, nil
 }
