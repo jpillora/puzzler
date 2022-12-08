@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"regexp"
 	"strconv"
+	"strings"
 
 	"github.com/PuerkitoBio/goquery"
 	"github.com/jpillora/pzlr/internal/pzlr/x"
@@ -71,7 +72,6 @@ func getProblemSpec(id string) (problemSpec, error) {
 			return p, nil
 		}
 	}
-
 	s := fmt.Sprintf("slug: %s", slug)
 	if num > 0 {
 		s = fmt.Sprintf("id: %d", num)
@@ -146,7 +146,7 @@ func getProblemCode(slug string) (code string, err error) {
 	return "", fmt.Errorf("go code snippet not found for slug: %s", slug)
 }
 
-func fetchQuestion(url string) (string, error) {
+func fetchQuestionText(url string) (string, error) {
 	rc, err := x.Get(url)
 	if err != nil {
 		return "", errors.New("failed to fetch aoc description")
@@ -165,5 +165,23 @@ func fetchQuestion(url string) (string, error) {
 		return "", errors.New("no meta desc content")
 	}
 	c = regexp.MustCompile(`(?m)^[\x{25A0}\x{00A0}\s]+\n`).ReplaceAllString(c, "\n")
+	// wrap at 80 chars
+	const w = 80
+	lines := strings.Split(c, "\n")
+	for i := 0; i < len(lines); i++ {
+		l := lines[i]
+		if len(l) < w {
+			continue // dont need to wrap
+		}
+		j := strings.LastIndex(l[:w], " ")
+		if j == -1 {
+			continue // can't wrap
+		}
+		head := l[:j]
+		tail := l[j+1:]
+		lines = append(lines[0:i], append([]string{head, tail}, lines[i+1:]...)...)
+	}
+	c = strings.Join(lines, "\n")
+
 	return c, nil
 }

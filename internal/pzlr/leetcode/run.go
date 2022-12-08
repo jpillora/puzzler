@@ -33,7 +33,7 @@ func Run(id string, flags x.RunFlags) error {
 	}
 	// create README.txt if it doesn't exist
 	if err := x.CreateFunc(filepath.Join(dir, "README.txt"), func() (string, error) {
-		return fetchQuestion(url)
+		return fetchQuestionText(url)
 	}); err != nil {
 		return err
 	}
