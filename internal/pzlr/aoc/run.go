@@ -41,7 +41,7 @@ func Run(day string, flags x.RunFlags) error {
 		return err
 	}
 	fmt.Print("Start dev. ")
-	return gotestsum.Run("leetcode", []string{"--watch", "--format", "standard-verbose", "--hide-summary", "skipped,failed,errors"}) //, , "--format", "testname"
+	return gotestsum.Run("aoc", []string{"--watch", "--format", "standard-verbose", "--hide-summary", "skipped,failed,errors"}) //, , "--format", "testname"
 }
 
 const ans = `package %s

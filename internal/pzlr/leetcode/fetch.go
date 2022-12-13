@@ -34,8 +34,8 @@ type problemStat struct {
 }
 
 func getAllLeetcodeProblems() ([]problemSpec, error) {
-	rc, err := x.Cached("leetcode-problems", func() (io.ReadCloser, error) {
-		fmt.Printf("Fetching all leetcode problems...\n")
+	rc, err := x.NetCached("leetcode.com", "leetcode-problems", func() (io.ReadCloser, error) {
+		fmt.Printf("Fetching leetcode problem list...\n")
 		resp, err := http.Get("https://leetcode.com/api/problems/all/")
 		return resp.Body, err
 	})
@@ -97,7 +97,7 @@ type problemCode struct {
 }
 
 func getProblemCode(slug string) (code string, err error) {
-	rc, err := x.Cached("leetcode-problem-"+slug, func() (io.ReadCloser, error) {
+	rc, err := x.NetCached("leetcode.com", "leetcode-problem-"+slug, func() (io.ReadCloser, error) {
 		query := `query questionEditorData($s: String!) {
 			question(titleSlug: $s) {
 				codeSnippets {
@@ -146,7 +146,9 @@ func getProblemCode(slug string) (code string, err error) {
 	return "", fmt.Errorf("go code snippet not found for slug: %s", slug)
 }
 
-func fetchQuestionText(url string) (string, error) {
+func fetchQuestionText(slug string) (string, error) {
+	fmt.Printf("Fetching problem code for %s...\n", slug)
+	url := fmt.Sprintf("https://leetcode.com/problems/%s/", slug)
 	rc, err := x.Get(url)
 	if err != nil {
 		return "", errors.New("failed to fetch aoc description")
@@ -182,6 +184,5 @@ func fetchQuestionText(url string) (string, error) {
 		lines = append(lines[0:i], append([]string{head, tail}, lines[i+1:]...)...)
 	}
 	c = strings.Join(lines, "\n")
-
 	return c, nil
 }

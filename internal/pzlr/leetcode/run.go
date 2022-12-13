@@ -33,7 +33,7 @@ func Run(id string, flags x.RunFlags) error {
 	}
 	// create README.txt if it doesn't exist
 	if err := x.CreateFunc(filepath.Join(dir, "README.txt"), func() (string, error) {
-		return fetchQuestionText(url)
+		return fetchQuestionText(spec.Slug())
 	}); err != nil {
 		return err
 	}
@@ -63,14 +63,14 @@ func Run(id string, flags x.RunFlags) error {
 		// TODO: use a proper AST parser
 		code := buff.String()
 		code = regexp.MustCompile(`Generated Test.+\n`).ReplaceAllString(code, "")
+		if !strings.HasPrefix(code, "package ") {
+			return fmt.Errorf("problem %s test could not generated: %s", spec.ID(), code)
+		}
 		code = regexp.MustCompile(`\bTest_[a-z]`).ReplaceAllStringFunc(code, func(b string) string {
 			return "Test" + strings.ToUpper(string(b[5]))
 		})
 		code = regexp.MustCompile(`\bargs\b`).ReplaceAllString(code, "input")
 		code = regexp.MustCompile(`\bwant\b`).ReplaceAllString(code, "output")
-		if !strings.HasPrefix(code, "package ") {
-			return fmt.Errorf("problem %s test could not generated: %s", spec.ID(), code)
-		}
 		fmt.Printf("Created stub test file %s\n", testFile)
 		if err := os.WriteFile(testFile, []byte(code), 0755); err != nil {
 			return fmt.Errorf("problem %s code could not be created: %w", spec.ID(), err)
@@ -89,5 +89,5 @@ func Run(id string, flags x.RunFlags) error {
 		return err
 	}
 	fmt.Print("Start dev. ")
-	return gotestsum.Run("leetcode", []string{"--watch", "--format", "standard-verbose", "--hide-summary", "skipped,failed,errors"})
+	return gotestsum.Run("leetcode", []string{"--watch", "--format", "testname", "--hide-summary", "skipped,failed,errors"})
 }

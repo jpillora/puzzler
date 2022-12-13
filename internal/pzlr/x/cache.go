@@ -28,17 +28,28 @@ func (c *Cache) Fork(name string) *Cache {
 	}
 }
 
-func (c *Cache) Cached(id string, fn func() (io.ReadCloser, error)) (io.ReadCloser, error) {
+func (c *Cache) NetCached(domain, id string, fn func() (io.ReadCloser, error)) (io.ReadCloser, error) {
+	var expires time.Duration
+	if Online(domain) {
+		expires = 7 * 24 * time.Hour
+	}
+	return c.Cached(id, expires, fn)
+}
+
+func (c *Cache) Cached(id string, expires time.Duration, fn func() (io.ReadCloser, error)) (io.ReadCloser, error) {
 	c.locks.Lock(id)
 	defer c.locks.Unlock(id)
 	file := c.Base + "-" + id + ".bin"
 	path := filepath.Join(os.TempDir(), file)
 	// already cached to disk within the last day, return file as the read-closer
 	s, err := os.Stat(path)
-	if err == nil && !s.IsDir() && time.Since(s.ModTime()) < 24*time.Hour {
-		f, err := os.Open(path)
-		if err == nil {
-			return f, nil
+	if err == nil && !s.IsDir() {
+		ready := expires == 0 || time.Since(s.ModTime()) < expires
+		if ready {
+			f, err := os.Open(path)
+			if err == nil {
+				return f, nil
+			}
 		}
 	}
 	// not cached, return the function (likely a network request)
@@ -61,8 +72,8 @@ func (c *Cache) Cached(id string, fn func() (io.ReadCloser, error)) (io.ReadClos
 	}, nil
 }
 
-func Cached(id string, fn func() (io.ReadCloser, error)) (io.ReadCloser, error) {
-	return defaultCache.Cached(id, fn)
+func NetCached(domain, id string, fn func() (io.ReadCloser, error)) (io.ReadCloser, error) {
+	return defaultCache.NetCached(domain, id, fn)
 }
 
 type teeReadCloser struct {
@@ -75,7 +86,7 @@ func (r *teeReadCloser) Read(p []byte) (int, error) {
 		return 0, io.EOF
 	}
 	n, err := r.rc.Read(p)
-	if n > 0 && !r.closed() {
+	if n > 0 && r.teeFile != nil {
 		r.teeFile.Write(p[:n]) // ignore cache file write errors
 	}
 	if err == io.EOF {
@@ -90,12 +101,8 @@ func (r *teeReadCloser) Close() error {
 }
 
 func (r *teeReadCloser) closeTee() {
-	if !r.closed() {
-		r.teeFile.Close()
+	if t := r.teeFile; t != nil {
 		r.teeFile = nil
+		t.Close()
 	}
-}
-
-func (r *teeReadCloser) closed() bool {
-	return r.teeFile == nil
 }

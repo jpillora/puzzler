@@ -6,14 +6,19 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
 )
 
-func Get(url string) (io.ReadCloser, error) {
+func Get(uri string) (io.ReadCloser, error) {
+	u, err := url.Parse(uri)
+	if err != nil {
+		return nil, err
+	}
 	// hash url with md5
-	id := fmt.Sprintf("%x", md5.Sum([]byte(url)))
+	id := fmt.Sprintf("%x", md5.Sum([]byte(u.String())))
 	// cached http get
-	return Cached(id, func() (io.ReadCloser, error) {
-		resp, err := http.Get(url)
+	return NetCached(u.Hostname(), id, func() (io.ReadCloser, error) {
+		resp, err := http.Get(u.String())
 		if err != nil {
 			return nil, err
 		}
@@ -21,8 +26,8 @@ func Get(url string) (io.ReadCloser, error) {
 	})
 }
 
-func GetJSON(url string, data any) error {
-	rc, err := Get(url)
+func GetJSON(uri string, data any) error {
+	rc, err := Get(uri)
 	if err != nil {
 		return err
 	}
