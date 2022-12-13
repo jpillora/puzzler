@@ -6,9 +6,9 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/jpillora/pzlr/internal/pzlr/aoc"
-	"github.com/jpillora/pzlr/internal/pzlr/leetcode"
-	"github.com/jpillora/pzlr/internal/pzlr/x"
+	"github.com/jpillora/puzzler/internal/pzlr/aoc"
+	"github.com/jpillora/puzzler/internal/pzlr/leetcode"
+	"github.com/jpillora/puzzler/internal/pzlr/x"
 )
 
 type RunWith struct {

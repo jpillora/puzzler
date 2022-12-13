@@ -6,7 +6,7 @@ import (
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/PuerkitoBio/goquery"
-	"github.com/jpillora/pzlr/internal/pzlr/x"
+	"github.com/jpillora/puzzler/internal/pzlr/x"
 )
 
 func fetchQuestion(year, day int) (string, error) {

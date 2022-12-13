@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strconv"
 
-	"github.com/jpillora/pzlr/internal/pzlr/x"
+	"github.com/jpillora/puzzler/internal/pzlr/x"
 	gotestsum "gotest.tools/gotestsum/cmd"
 )
 

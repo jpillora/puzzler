@@ -1,7 +1,9 @@
 # test this file with
 #   goreleaser --skip-publish --rm-dist --config goreleaser.yml
 builds:
-  - env:
+  - binary: pzlr
+    main: ./cmd/pzlr
+    env:
       - CGO_ENABLED=0
     flags:
       - -trimpath

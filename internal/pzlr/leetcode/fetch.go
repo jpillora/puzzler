@@ -12,7 +12,7 @@ import (
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/jpillora/pzlr/internal/pzlr/x"
+	"github.com/jpillora/puzzler/internal/pzlr/x"
 )
 
 type problemSpec struct {

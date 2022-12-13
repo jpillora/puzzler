@@ -5,7 +5,7 @@ import (
 	"os"
 
 	"github.com/jpillora/opts"
-	"github.com/jpillora/pzlr/internal/pzlr"
+	"github.com/jpillora/puzzler/internal/pzlr"
 )
 
 func main() {

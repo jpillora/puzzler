@@ -1,8 +1,8 @@
-# pzlr
+# Puzzler
 
-[![CI](https://github.com/jpillora/pzlr/workflows/CI/badge.svg)](https://github.com/jpillora/pzlr/actions?workflow=CI)
+[![CI](https://github.com/jpillora/puzzler/workflows/CI/badge.svg)](https://github.com/jpillora/puzzler/actions?workflow=CI)
 
-Puzzler `pzlr(1)` is a command-line tool to **locally** develop solutions to various programming puzzles using Go (golang). Current, it supports
+Puzzler `pzlr(1)` is a command-line tool to **locally** develop solutions to various programming puzzles using Go (golang). You only need to be connected to the internet to fetch the questions. Current, it supports
 
 * Leetcode https://leetcode.com
 * Advent of Code https://adventofcode.com
@@ -12,28 +12,25 @@ Puzzler `pzlr(1)` is a command-line tool to **locally** develop solutions to var
 **Binaries**
 
 <!-- WHEN PUBLIC
-[![Releases](https://img.shields.io/github/release/jpillora/pzlr.svg)](https://github.com/jpillora/pzlr/releases)
-[![Releases](https://img.shields.io/github/downloads/jpillora/pzlr/total.svg)](https://github.com/jpillora/pzlr/releases) -->
+[![Releases](https://img.shields.io/github/release/jpillora/pzlr.svg)](https://github.com/jpillora/puzzler/releases)
+[![Releases](https://img.shields.io/github/downloads/jpillora/pzlr/total.svg)](https://github.com/jpillora/puzzler/releases) -->
 
-Find [the latest pre-compiled binaries here](https://github.com/jpillora/pzlr/releases/latest)  or download and install it now with:
+Find [the latest pre-compiled binaries here](https://github.com/jpillora/puzzler/releases/latest)  or download and install it now with:
 
 ```sh
-curl https://i.jpillora.com/pzlr! | bash
+# download an install the pzlr command with
+curl https://i.jpillora.com/puzzler! | bash
 ```
 
 **Source**
 
 ```sh
-go get github.com/jpillora/pzlr@latest
+go get github.com/jpillora/puzzler/cmd/pzlr@latest
 ```
 
-### Usage
+### Examples
 
-See either the
-
-<details>
-<summary>
-<h3>Leetcode example: <code>pzlr leetcode 151</code></h3></summary>
+#### Leetcode
 
 1. Create directory
 
@@ -136,32 +133,23 @@ See either the
 
 1. Once tests are passing, you will need to copy your solution into `leetcode.com` and submit there (_TODO submit via CLI_)
 
-</details>
 
-or the 
+#### Advent of Code
 
-<details>
-<summary>
-<h3>Advent of Code example: <code>pzlr aoc 3</code></h3></summary>
+TODO
 
-1. Foobar
-1. Foobar
-1. Foobar
-
-</details>
-
-### TODO
+### Future features
 
 * Leetcode
 	* Improve test stub file
-	* Convert problem HTML into markdown and store as `leetcode/NNNN/problem.md`
 	* Implement (or borrow) leetcode login code to allow `pzlr leetcode NNNN --submit` (automatically submits if all tests are passing)
 * Advent of Code
-	* Implement...
+	* Improve test stub file
 
 ### Caveats
 
 * Only supports Go (but could support other languages with a PR)
+	* Should be implemented using a `Language` interface which holds the differences
 * Go must be installed (if you're brave, you can run `curl https://jpillora.com/dotfiles/bin/`[`install-go`](https://github.com/jpillora/dotfiles/blob/main/bin/install-go) ` | bash`)
 * Unit test cases need to be manually filled in (`code_test.go` will contain an empty "test table")
 * Answers need to be manually submitted (`code.go` will contain the link to submission page)
