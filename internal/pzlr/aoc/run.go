@@ -57,7 +57,6 @@ func run(input string) (any, error) {
 const test = `package %s
 
 import (
-	"fmt"
 	"testing"
 )
 

@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/jpillora/puzzler/workflows/CI/badge.svg)](https://github.com/jpillora/puzzler/actions?workflow=CI)
 
-Puzzler `pzlr(1)` is a command-line tool to **locally** develop solutions to various programming puzzles using Go (golang). You only need to be connected to the internet to fetch the questions. Current, it supports
+Puzzler `pzlr(1)` is a command-line tool to **locally** develop solutions to various programming puzzles using Go (golang). An internet connection is only required to fetch the questions. Current, it supports
 
 * Leetcode https://leetcode.com
 * Advent of Code https://adventofcode.com
