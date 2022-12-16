@@ -31,7 +31,7 @@ func Run(day string, flags x.RunFlags) error {
 	if err := x.Create(filepath.Join(dir, "code.go"), ansCode); err != nil {
 		return err
 	}
-	testCode := fmt.Sprintf(test, pkg, "``")
+	testCode := fmt.Sprintf(test, pkg)
 	if err := x.Create(filepath.Join(dir, "code_test.go"), testCode); err != nil {
 		return err
 	}
@@ -46,43 +46,40 @@ func Run(day string, flags x.RunFlags) error {
 
 const ans = `package %s
 
-import (
-	"errors"
-)
-
-func run(input string) (any, error) {
-	return nil, errors.New("not implemented")
-}`
+func run(part1 bool, input string) any {
+	return 42
+}
+`
 
 const test = `package %s
 
 import (
+	"fmt"
 	"testing"
 )
 
-const input = %s
 
-func TestEg(t *testing.T) {
-	ans, err := run(input)
-	if err != nil {
-		t.Fatalf("eg => %%s\n", err)
+func TestCode(t *testing.T) {
+	print := func() {
+		r := recover()
+		if r == nil {
+			return
+		}
+		fmt.Printf("%%v\n", r)
+		t.Fail()
 	}
-	t.Logf("eg => %%v\n", ans)
+	defer print()
+	fmt.Print("example input1 => ")
+	fmt.Printf("%%v\n", run(true, inputEg))
+	fmt.Print("example input2 => ")
+	fmt.Printf("%%v\n", run(false, inputEg))
+	fmt.Print("   user input1 => ")
+	fmt.Printf("%%v\n", run(true, inputUser))
+	fmt.Print("   user input2 => ")
+	fmt.Printf("%%v\n", run(false, inputUser))
 }
 
-func TestPart1(t *testing.T) {
-	ans, err := run(input)
-	if err != nil {
-		t.Fatalf("part1 => %%s\n", err)
-	}
-	t.Logf("part1 => %%v\n", ans)
-}
+const inputEg = ` + "``" + `
 
-func TestPart2(t *testing.T) {
-	ans, err := run(input)
-	if err != nil {
-		t.Fatalf("part2 => %%s\n", err)
-	}
-	t.Logf("part2 => %%v\n", ans)
-}
+const inputUser = ` + "``" + `
 `

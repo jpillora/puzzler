@@ -144,6 +144,15 @@ TODO
 	* Improve test stub file
 	* Implement (or borrow) leetcode login code to allow `pzlr leetcode NNNN --submit` (automatically submits if all tests are passing)
 * Advent of Code
+	* Switch to a custom runner
+		* `code.go` stub function, using text inputs
+		* `input.go` text inputs
+		* `code_harness.go` runs stub function in watch mode
+	* Implement aoc login
+		* Fetch part 1 user input
+		* Submit part 1
+		* Fetch part 2 user input
+		* Submit part 2
 	* Improve test stub file
 
 ### Caveats
