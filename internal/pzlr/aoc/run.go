@@ -55,9 +55,9 @@ const test = `package %s
 
 import (
 	"fmt"
+	"runtime/debug"
 	"testing"
 )
-
 
 func TestCode(t *testing.T) {
 	print := func() {
@@ -65,7 +65,7 @@ func TestCode(t *testing.T) {
 		if r == nil {
 			return
 		}
-		fmt.Printf("%%v\n", r)
+		fmt.Printf("%v\n\n%s\n", r, string(debug.Stack()))
 		t.Fail()
 	}
 	defer print()
