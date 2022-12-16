@@ -65,7 +65,7 @@ func TestCode(t *testing.T) {
 		if r == nil {
 			return
 		}
-		fmt.Printf("%v\n\n%s\n", r, string(debug.Stack()))
+		fmt.Printf("%%v\n\n%%s\n", r, string(debug.Stack()))
 		t.Fail()
 	}
 	defer print()
