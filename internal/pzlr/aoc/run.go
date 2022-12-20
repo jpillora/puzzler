@@ -60,14 +60,12 @@ import (
 )
 
 func TestCode(t *testing.T) {
-	print := func() {
-		r := recover()
-		if r == nil {
-			return
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("%%v\n\n%%s\n", r, string(debug.Stack()))
+			t.Fail()
 		}
-		fmt.Printf("%%v\n\n%%s\n", r, string(debug.Stack()))
-		t.Fail()
-	}
+	}()
 	defer print()
 	fmt.Print("example input1 => ")
 	fmt.Printf("%%v\n", run(true, inputEg))
