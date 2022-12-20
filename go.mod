@@ -13,6 +13,12 @@ require (
 )
 
 require (
+	github.com/maruel/panicparse v1.6.2 // indirect
+	github.com/maruel/panicparse/v2 v2.3.1 // indirect
+	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
+)
+
+require (
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/dnephin/pflag v1.0.7 // indirect
 	github.com/fatih/color v1.13.0 // indirect

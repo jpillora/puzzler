@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/jpillora/ansi"
+	"github.com/jpillora/puzzler/internal/pzlr/x"
 )
 
 func user(fn RunFn) error {
@@ -22,14 +23,22 @@ func user(fn RunFn) error {
 	for _, file := range files {
 		name := file.Name()
 		if file.IsDir() {
-			continue
+			continue // ignore dirs
 		}
 		m := inputRe.FindStringSubmatch(name)
 		if len(m) == 0 {
 			continue
 		}
 		id := m[1]
-		if err := runWith(fn, id, name); err != nil {
+		b, err := os.ReadFile(name)
+		if err != nil {
+			return err
+		}
+		if len(b) == 0 {
+			continue // ignore empty files
+		}
+		input := string(b)
+		if err := runWith(fn, id, input); err != nil {
 			return err
 		}
 		ran++
@@ -40,13 +49,7 @@ func user(fn RunFn) error {
 	return nil
 }
 
-func runWith(fn RunFn, id, filename string) error {
-	// read file into buffer
-	b, err := os.ReadFile(filename)
-	if err != nil {
-		return err
-	}
-	input := string(b)
+func runWith(fn RunFn, id, input string) error {
 	// run part1
 	if err := runPartWith(fn, id, false, input); err != nil {
 		return err
@@ -64,8 +67,7 @@ func runPartWith(fn RunFn, id string, part2 bool, input string) error {
 	if part2 {
 		p = "2"
 	}
-	// log.Printf("run %s", prefix)
-	// TODO recover
+	defer x.PanicPrint()
 	value := fn(part2, input)
 	s, ok := value.(string)
 	skip := ok && s == "not implemented"
