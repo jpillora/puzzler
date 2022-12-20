@@ -74,7 +74,7 @@ func runPartWith(fn RunFn, id string, part2 bool, input string) error {
 	if skip {
 		return nil
 	}
-	out := fmt.Sprintf("%v", value)
+	out := ansi.Bright.String(fmt.Sprintf("%v", value))
 	if strings.Contains(out, "\n") {
 		out = "\n" + out
 	}
