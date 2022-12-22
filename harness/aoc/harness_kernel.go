@@ -2,11 +2,11 @@ package aoc
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"regexp"
+	"time"
 
 	"github.com/fsnotify/fsnotify"
 	"golang.org/x/sync/errgroup"
@@ -49,7 +49,7 @@ func kernel() error {
 		if out, err := exec.Command("go", "mod", "init", modName).CombinedOutput(); err != nil {
 			return fmt.Errorf("go mod init failed: %s: %s", err, out)
 		}
-		log.Printf("created go.mod file")
+		logf("created go.mod file")
 	}
 	//
 	events := make(chan event)
@@ -76,13 +76,15 @@ func watch(events chan event) error {
 		return err
 	}
 	// process events
+	restartLast := time.Time{}
 	restartPattern := regexp.MustCompile(`(.+\.go|input.+\.txt)`)
 	for {
 		select {
 		case event, ok := <-w.Events:
-			if ok && event.Has(fsnotify.Write) && restartPattern.MatchString(event.Name) {
-				log.Printf("file changed %s", event.Name)
+			if ok && restartPattern.MatchString(event.Name) && time.Since(restartLast) > 250*time.Millisecond {
+				logf("file changed %s", event.Name)
 				events <- restart
+				restartLast = time.Now()
 			}
 		case err, ok := <-w.Errors:
 			if ok {
@@ -102,7 +104,7 @@ func run(year, day string, events <-chan event) error {
 			if e == restart {
 				if proc != nil && proc.Process != nil {
 					proc.Process.Kill()
-					log.Printf("killed code.go process")
+					logf("killed code.go process")
 				}
 				if len(start) == 0 {
 					start <- true
@@ -122,7 +124,7 @@ func run(year, day string, events <-chan event) error {
 		proc.Stdout = os.Stdout
 		proc.Stderr = os.Stderr
 		if err := proc.Start(); err != nil {
-			log.Printf("fail: go run code.go: %s", err)
+			logf("fail: go run code.go: %s", err)
 			continue
 		}
 		proc.Wait()
@@ -130,7 +132,7 @@ func run(year, day string, events <-chan event) error {
 		num := proc.ProcessState.ExitCode()
 		proc = nil
 		if num != 0 {
-			log.Printf("code.go exited with code %d, waiting for file change...", num)
+			logf("code.go exited with code %d, waiting for file change...", num)
 		}
 		// block until restarted
 		<-start

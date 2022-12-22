@@ -14,13 +14,17 @@ import (
 	"github.com/maruel/panicparse/v2/stack"
 )
 
-func PanicPrint() {
-	a := recover()
-	if a == nil {
+func RecoverPanicPrint() {
+	r := recover()
+	if r == nil {
 		return
 	}
 	fmt.Print(ansi.Red.String("panic:\n"))
-	fmt.Printf(ansi.Bright.String("\t%v\n"), a)
+	fmt.Printf(ansi.Bright.String("\t%v\n"), r)
+	PanicPrint(r)
+}
+
+func PanicPrint(r any) {
 	const mb = 1 << 20
 	buf := make([]byte, 1*mb)
 	for i := 0; ; i++ {
@@ -40,15 +44,18 @@ func PanicPrint() {
 	}
 	// Find out similar goroutine traces and group them into buckets.
 	buckets := s.Aggregate(stack.AnyValue).Buckets
-	// Filter out internal stack frames
+	// Only show stack frames in cwd, and lengthen paths
 	for _, bucket := range buckets {
 		filtered := []stack.Call{}
 		for _, line := range bucket.Signature.Stack.Calls {
-			internal := (line.Func.DirName == "aoc" && strings.Contains(line.SrcName, "harness")) ||
-				(line.Func.DirName == "x" && line.SrcName == "panic_print.go") ||
-				(line.Func.DirName == "" && line.SrcName == "panic.go")
-			if !internal {
-				filtered = append(filtered, line)
+			_, err := os.Stat(line.SrcName)
+			if err == nil {
+				abs, err := filepath.Abs(line.SrcName)
+				if err == nil {
+					parent := filepath.Dir(filepath.Dir(filepath.Dir(abs))) + string(filepath.Separator)
+					line.SrcName = strings.TrimPrefix(abs, parent)
+					filtered = append(filtered, line)
+				}
 			}
 		}
 		bucket.Signature.Stack.Calls = filtered
@@ -58,7 +65,7 @@ func PanicPrint() {
 	pkgLen := 0
 	for _, bucket := range buckets {
 		for _, line := range bucket.Signature.Stack.Calls {
-			if l := len(fmt.Sprintf("%s:%d", line.SrcName, line.Line)); l > srcLen {
+			if l := len(ansi.Blue.String(fmt.Sprintf("%s:%d", line.SrcName, line.Line))); l > srcLen {
 				srcLen = l
 			}
 			if l := len(filepath.Base(line.Func.ImportPath)); l > pkgLen {
