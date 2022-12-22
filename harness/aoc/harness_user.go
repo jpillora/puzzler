@@ -73,7 +73,8 @@ func runPartWith(fn RunFn, id string, part2 bool, input string) (next bool) {
 	}()
 	value := fn(part2, input)
 	s, ok := value.(string)
-	print := !ok || s != "not implemented"
+	skip := value == nil || ok && (s == "skip" || s == "not implemented")
+	print := !skip
 	if print {
 		result(p, id, ts, true, value)
 	}
