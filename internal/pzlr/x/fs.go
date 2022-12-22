@@ -1,8 +1,10 @@
 package x
 
 import (
+	"crypto/md5"
 	"errors"
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
 )
@@ -13,7 +15,7 @@ func MkdirAll(dir string) error {
 		if err := os.MkdirAll(dir, 0755); err != nil {
 			return err
 		}
-		fmt.Printf("Created directory %s/\n", dir)
+		Logf("Created directory %s/", dir)
 	} else if err != nil {
 		return err
 	} else if !s.IsDir() {
@@ -32,7 +34,7 @@ func CreateFunc(path string, fn func() (string, error)) error {
 		if err := os.WriteFile(path, []byte(contents), 0755); err != nil {
 			return err
 		}
-		fmt.Printf("Created file %s\n", path)
+		Logf("Created file %s", path)
 		return nil
 	}
 	if err != nil {
@@ -47,4 +49,31 @@ func CreateFunc(path string, fn func() (string, error)) error {
 
 func Create(file, contents string) error {
 	return CreateFunc(file, func() (string, error) { return contents, nil })
+}
+
+type fileHash [md5.Size]byte
+
+type FileCache struct {
+	files map[string]fileHash
+}
+
+func (c *FileCache) Changed(path string) bool {
+	if c.files == nil {
+		c.files = make(map[string]fileHash)
+	}
+	f, err := os.Open(path)
+	if err != nil {
+		return false
+	}
+	defer f.Close()
+	h := md5.New()
+	if _, err := io.Copy(h, f); err != nil {
+		return false
+	}
+	curr := fileHash{}
+	copy(curr[:], h.Sum(nil))
+	prev := c.files[path]
+	c.files[path] = curr
+	changed := curr != prev
+	return changed
 }

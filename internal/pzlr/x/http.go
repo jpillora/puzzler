@@ -9,21 +9,51 @@ import (
 	"net/url"
 )
 
-func Get(uri string) (io.ReadCloser, error) {
+// type Request struct {
+// 	Method string
+// 	URL string
+// 	Input any
+// 	Output any
+// }
+
+func GetWith(uri string, headers map[string]string) (io.ReadCloser, error) {
 	u, err := url.Parse(uri)
 	if err != nil {
 		return nil, err
 	}
+	if headers == nil {
+		headers = make(map[string]string)
+	}
+	headers["User-Agent"] = "github.com/jpillora/puzzler"
 	// hash url with md5
-	id := fmt.Sprintf("%x", md5.Sum([]byte(u.String())))
+	h := md5.New()
+	h.Write([]byte(u.String()))
+	for k, v := range headers {
+		h.Write([]byte("|"))
+		h.Write([]byte(k))
+		h.Write([]byte("|"))
+		h.Write([]byte(v))
+	}
+	id := fmt.Sprintf("%x", h.Sum(nil))
 	// cached http get
 	return NetCached(u.Hostname(), id, func() (io.ReadCloser, error) {
-		resp, err := http.Get(u.String())
+		req, err := http.NewRequest("GET", u.String(), nil)
+		if err != nil {
+			return nil, err
+		}
+		for k, v := range headers {
+			req.Header.Set(k, v)
+		}
+		resp, err := http.DefaultClient.Do(req)
 		if err != nil {
 			return nil, err
 		}
 		return resp.Body, nil
 	})
+}
+
+func Get(uri string) (io.ReadCloser, error) {
+	return GetWith(uri, nil)
 }
 
 func GetJSON(uri string, data any) error {

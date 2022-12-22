@@ -1,4 +1,4 @@
-package aoc
+package user
 
 import (
 	"errors"
@@ -12,7 +12,9 @@ import (
 	"github.com/jpillora/puzzler/internal/pzlr/x"
 )
 
-func user(fn RunFn) error {
+type RunFn func(part1 bool, input string) any
+
+func Harness(fn RunFn) error {
 	files, err := os.ReadDir(".")
 	if err != nil {
 		return err

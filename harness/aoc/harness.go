@@ -1,28 +1,22 @@
 package aoc
 
 import (
-	"fmt"
 	"log"
 	"os"
 
-	"github.com/jpillora/ansi"
+	"github.com/jpillora/puzzler/harness/aoc/kernel"
+	"github.com/jpillora/puzzler/harness/aoc/user"
 )
 
-type RunFn func(part1 bool, input string) any
-
-func Harness(fn RunFn) {
+func Harness(fn user.RunFn) {
 	if err := harness(fn); err != nil {
 		log.Fatalf("harness: %s", err)
 	}
 }
 
-func harness(fn RunFn) error {
+func harness(fn user.RunFn) error {
 	if os.Getenv("AOC_HARNESS") == "1" {
-		return user(fn)
+		return user.Harness(fn)
 	}
-	return kernel()
-}
-
-func logf(format string, args ...interface{}) {
-	fmt.Printf(ansi.Black.String(format+"\n"), args...)
+	return kernel.Harness()
 }

@@ -6,7 +6,6 @@ import (
 	"os"
 	"os/exec"
 
-	"github.com/jpillora/puzzler/internal/pzlr/aoc"
 	"github.com/jpillora/puzzler/internal/pzlr/leetcode"
 	"github.com/jpillora/puzzler/internal/pzlr/x"
 )
@@ -33,8 +32,6 @@ func Run(w RunWith) error {
 	switch w.Provider {
 	case "l", "leetcode":
 		return leetcode.Run(w.ID, w.Flags)
-	case "a", "aoc", "adventofcode":
-		return aoc.Run(w.ID, w.Flags)
 	}
 	return fmt.Errorf("unknown provider %q", w.Provider)
 }

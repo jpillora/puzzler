@@ -8,21 +8,16 @@ require (
 	github.com/cweill/gotests v1.6.0
 	github.com/jpillora/maplock v0.0.0-20160420012925-5c725ac6e22a
 	github.com/jpillora/opts v1.2.3
+	github.com/maruel/panicparse/v2 v2.3.1
 	golang.org/x/sync v0.0.0-20220601150217-0de741cfad7f
 	gotest.tools/gotestsum v1.8.2
-)
-
-require (
-	github.com/maruel/panicparse v1.6.2 // indirect
-	github.com/maruel/panicparse/v2 v2.3.1 // indirect
-	github.com/mgutz/ansi v0.0.0-20200706080929-d51e80ef957d // indirect
 )
 
 require (
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/dnephin/pflag v1.0.7 // indirect
 	github.com/fatih/color v1.13.0 // indirect
-	github.com/fsnotify/fsnotify v1.6.0 // indirect
+	github.com/fsnotify/fsnotify v1.6.0
 	github.com/google/shlex v0.0.0-20191202100458-e7afc7fbc510 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
 	github.com/hashicorp/go-multierror v1.0.0 // indirect

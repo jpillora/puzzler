@@ -2,168 +2,82 @@
 
 [![CI](https://github.com/jpillora/puzzler/workflows/CI/badge.svg)](https://github.com/jpillora/puzzler/actions?workflow=CI)
 
-Puzzler `pzlr(1)` is a command-line tool to **locally** develop solutions to various programming puzzles using Go (golang). An internet connection is only required to fetch the questions. Current, it supports
+Puzzler is a Go (golang) program wrapper to assist in developing solutions to various programming puzzles. An internet connection is only required to fetch the questions. Current, it supports:
 
 * Leetcode https://leetcode.com
-* Advent of Code https://adventofcode.com
+* 
 
-### Install
+## Leetcode
 
-**Binaries**
+TODO HARNESS
 
-<!-- WHEN PUBLIC
-[![Releases](https://img.shields.io/github/release/jpillora/pzlr.svg)](https://github.com/jpillora/puzzler/releases)
-[![Releases](https://img.shields.io/github/downloads/jpillora/pzlr/total.svg)](https://github.com/jpillora/puzzler/releases) -->
+## Advent of Code
 
-Find [the latest pre-compiled binaries here](https://github.com/jpillora/puzzler/releases/latest)  or download and install it now with:
+[Advent of Code](https://adventofcode.com) is a yearly series of programming questions based on the [Advent Calendar](https://en.wikipedia.org/wiki/Advent_calendar). For each day leading up to christmas, there is one question released, and from the second it is released, there is a timer running and a leaderboard showing who solved it first.
 
-```sh
-# download an install the pzlr command with
-curl https://i.jpillora.com/puzzler! | bash
-```
+1. Install Go 1.18+ from https://go.dev/dl/, or using [my install script](https://github.com/jpillora/dotfiles/blob/main/bin/install-go):
 
-**Source**
+	```sh
+	curl https://jpillora.com/dotfiles/bin/install-go | bash
+	```
 
-```sh
-go get github.com/jpillora/puzzler/cmd/pzlr@latest
-```
+1. Make an Advent of Code directory/repository (choose your own name) and initialise it as a Go module
 
-### Examples
+	```
+	mkdir -p my-aoc-solutions
+	cd my-aoc-solutions
+	go mod init my-aoc-solutions
+	```
 
-#### Leetcode
+1. Make a directory and file `YYYY/DD/code.go` where `YYYY`/`DD` is the AOC year/day you'd like to attempt
 
-1. Create directory
+	```
+	mkdir -p 2022/09/
+	touch 2022/09/code.go
+	```
 
-   ```shell
-   mkdir pzlr
-   cd pzlr
-   ```
+1. Paste the following into `code.go`
 
-1. Open terminal, start leetcode problem `151` with:
+	```go
+	package main
 
-   ```shell
-   pzlr --open leetcode 151
+	import (
+		"github.com/jpillora/puzzler/harness/aoc"
+	)
 
-   Found problem #0151 https://leetcode.com/problems/reverse-words-in-a-string/
-   Created directory leetcode/0151/
-   Fetching problem code for reverse-words-in-a-string...
-   Created stub answer file leetcode/0151/code.go
-   Created stub test file leetcode/0151/code_test.go
-   Starting gotestsum: Watching 1 directories. Use Ctrl-c to to stop a run or exit.
-   ```
+	func main() {
+		aoc.Harness(run)
+	}
 
-1. Open in VS Code (or another editor)
+	func run(part2 bool, input string) any {
+		if part2 {
+			return "not implemented"
+		}
+		return 42
+	}
+	```
 
-   ```shell
-   code leetcode/0151
-   ```
+1. Run `code.go`
 
-1. File `leetcode/0151/code.go` will contain:
+	```sh
+	go run main.go
+	```
 
-   ```go
-   package p0151
+1. You should see
 
-   func reverseWords(s string) string {
-       
-   }
-   ```
+	```sh
+	Created file README.md
+	Created file input-example.txt
+	run(part1, input-eg) returned in 37µs => 42
+	# update code.go to return 43 and...
+	file changed code.go
+	run(part1, input-eg) returned in 34µs => 43
+	```
 
-1. File `leetcode/0151/code_test.go` will contain:
+	**Optionally** set `AOC_SESSION` to your adventofcode.com `session` cookie and it will also download your specific user input (`input-user.txt`)
 
-   ```go
-   package p0151
+1. TODO submission
 
-   import "testing"
-
-   func TestReverseWords(t *testing.T) {
-   	type input struct {
-   		s string
-   	}
-   	tests := []struct {
-   		name string
-   		input input
-   		output string
-   	}{
-   		// TODO: Add test cases.
-   	}
-   	for _, tt := range tests {
-   		tt := tt
-   		t.Run(tt.name, func(t *testing.T) {
-   			t.Parallel()
-   			if got := reverseWords(tt.input.s); got != tt.output {
-   				t.Errorf("reverseWords() = %v, output %v", got, tt.output)
-   			}
-   		})
-   	}
-   }
-   ```
-
-1. You will need to read the question and copy the example input/outputs into the `code_test.go` file
-
-   ```go
-		// for example, here are two test cases for problem 151
-		{
-			input:  input{s: "the sky is blue"},
-			output: "blue is sky the",
-		},
-		{
-			input:  input{s: "  hello world  "},
-			output: "world hello",
-		},
-   ```
-
-1. You will need to implement the solution in `code.go`
-
-   ```go
-   // for example, here is one solution to problem 151
-   func reverseWords(s string) string {
-   	spaces := regexp.MustCompile(`\s+`)
-   	words := spaces.Split(strings.TrimSpace(s), -1)
-   	last := len(words) - 1
-   	mid := last / 2
-   	for i := range words {
-   		if i > mid {
-   			break
-   		}
-   		words[i], words[last-i] = words[last-i], words[i]
-   	}
-   	return strings.Join(words, " ")
-   }
-   ```
-
-1. Once tests are passing, you will need to copy your solution into `leetcode.com` and submit there (_TODO submit via CLI_)
-
-
-#### Advent of Code
-
-TODO
-
-### Future features
-
-* Leetcode
-	* Improve test stub file
-	* Implement (or borrow) leetcode login code to allow `pzlr leetcode NNNN --submit` (automatically submits if all tests are passing)
-* Advent of Code
-	* Switch to a custom runner
-		* `code.go` stub function, using text inputs
-		* `input.go` text inputs
-		* `code_harness.go` runs stub function in watch mode
-	* Implement aoc login
-		* Fetch part 1 user input
-		* Submit part 1
-		* Fetch part 2 user input
-		* Submit part 2
-	* Improve test stub file
-
-### Caveats
-
-* Only supports Go (but could support other languages with a PR)
-	* Should be implemented using a `Language` interface which holds the differences
-* Go must be installed (if you're brave, you can run `curl https://jpillora.com/dotfiles/bin/`[`install-go`](https://github.com/jpillora/dotfiles/blob/main/bin/install-go) ` | bash`)
-* Unit test cases need to be manually filled in (`code_test.go` will contain an empty "test table")
-* Answers need to be manually submitted (`code.go` will contain the link to submission page)
-
-### Credits
-
-* https://github.com/cweill/gotests is embedded
-* https://github.com/gotestyourself/gotestsum is embedded
+	* Requires `AOC_SESSION`
+	* Press `r` to re-run your program
+	* Press `s` to submit your most recent successful result the next part
