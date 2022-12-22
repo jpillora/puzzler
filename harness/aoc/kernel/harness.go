@@ -63,7 +63,7 @@ func Harness() error {
 			return "", err
 		}
 		codeBlock := "```"
-		re := regexp.MustCompile(`(?m)For example:\n+` + codeBlock + `\n((.*\n)+?)\n*` + codeBlock + `\n`)
+		re := regexp.MustCompile(`(?m)For example.*:\n+` + codeBlock + `\n((.*\n)+?)\n?` + codeBlock + `\n`)
 		example := ""
 		if m := re.FindSubmatch(md); len(m) > 0 {
 			example = string(m[1])
