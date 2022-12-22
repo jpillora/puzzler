@@ -76,13 +76,14 @@ func watch(events chan event) error {
 		return err
 	}
 	// process events
+	const restartDelay = 1000 * time.Millisecond
 	restartLast := time.Time{}
 	restartPattern := regexp.MustCompile(`(.+\.go|input.+\.txt)`)
 	for {
 		select {
 		case event, ok := <-w.Events:
-			if ok && restartPattern.MatchString(event.Name) && time.Since(restartLast) > 250*time.Millisecond {
-				logf("file changed %s", event.Name)
+			if ok && restartPattern.MatchString(event.Name) && time.Since(restartLast) > restartDelay {
+				logf("file changed %s (%s)", event.Name, event.Op)
 				events <- restart
 				restartLast = time.Now()
 			}
