@@ -31,7 +31,7 @@ func (c *Cache) Fork(name string) *Cache {
 func (c *Cache) NetCached(domain, id string, fn func() (io.ReadCloser, error)) (io.ReadCloser, error) {
 	var expires time.Duration
 	if Online(domain) {
-		expires = 7 * 24 * time.Hour
+		expires = 5 * time.Minute
 	}
 	return c.Cached(id, expires, fn)
 }
