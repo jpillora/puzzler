@@ -1,7 +1,6 @@
 package pzlr
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"os/exec"
@@ -23,11 +22,27 @@ func Run(w RunWith) error {
 			"  manually here: https://golang.org/doc/install\n" +
 			"  automatically with: curl https://jpillora.com/dotfiles/bin/install-go | bash")
 	}
+
 	// must have a go.mod file
-	if _, err := os.Stat("go.mod"); errors.Is(err, os.ErrNotExist) {
-		if out, err := exec.Command("go", "mod", "init", "pzlr").CombinedOutput(); err != nil {
+	valid := exec.Command("go", "mod", "verify").Run() == nil
+	if !valid {
+		modName := "pzlr"
+		cmd := exec.Command("go", "mod", "init", modName)
+		cmd.Dir = "."
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		if out, err := cmd.CombinedOutput(); err != nil {
 			return fmt.Errorf("go mod init failed: %s: %s", err, out)
 		}
+		x.Logf("created go.mod file")
+		// new go.mod file so lets download jpillora/puzller
+		cmd = exec.Command("go", "get", "github.com/jpillora/puzzler")
+		cmd.Stdout = os.Stdout
+		cmd.Stderr = os.Stderr
+		if out, err := cmd.CombinedOutput(); err != nil {
+			return fmt.Errorf("go get puzzler failed: %s: %s", err, out)
+		}
+		x.Logf("downloaded github.com/jpillora/puzzler")
 	}
 	switch w.Provider {
 	case "l", "leetcode":

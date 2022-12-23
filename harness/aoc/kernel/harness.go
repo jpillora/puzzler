@@ -82,7 +82,7 @@ func Harness() error {
 	}
 	//events in file watcher, out proc runner
 	events := make(chan event)
-	// watch files, and run on change
+	// begin watch files, and begin run-loop
 	eg := errgroup.Group{}
 	eg.Go(func() error {
 		return watch(events)
@@ -92,28 +92,3 @@ func Harness() error {
 	})
 	return eg.Wait()
 }
-
-// must have a go.mod file
-// valid := exec.Command("go", "mod", "verify").Run() == nil
-// if !valid {
-// 	modName := fmt.Sprintf("day%d", day)
-// 	cmd := exec.Command("go", "mod", "init", modName)
-// 	cmd.Dir = yearDir
-// 	cmd.Stdout = os.Stdout
-// 	cmd.Stderr = os.Stderr
-// 	if hasYearDir {
-// 		cmd.Dir = filepath.Dir(yearDir)
-// 	}
-// 	if out, err := cmd.CombinedOutput(); err != nil {
-// 		return fmt.Errorf("go mod init failed: %s: %s", err, out)
-// 	}
-// 	x.Logf("created go.mod file")
-// 	// new go.mod file so lets download jpillora/puzller
-// 	cmd = exec.Command("go", "get", "github.com/jpillora/puzzler")
-// 	cmd.Stdout = os.Stdout
-// 	cmd.Stderr = os.Stderr
-// 	if out, err := cmd.CombinedOutput(); err != nil {
-// 		return fmt.Errorf("go get puzzler failed: %s: %s", err, out)
-// 	}
-// 	x.Logf("downloaded github.com/jpillora/puzzler")
-// }
