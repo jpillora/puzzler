@@ -20,7 +20,8 @@ func Harness(fn RunFn) error {
 		return err
 	}
 	inputRe := regexp.MustCompile(`^input[-_]([\w_]+)\.txt?$`)
-	ran := 0
+	inputs := 0
+	runs := 0
 	for _, file := range files {
 		name := file.Name()
 		if file.IsDir() {
@@ -38,27 +39,39 @@ func Harness(fn RunFn) error {
 		if len(b) == 0 {
 			continue // ignore empty files
 		}
+		inputs++
 		input := string(b)
-		next := runWith(fn, id, input)
-		ran++
-		if !next {
+		ran, success := runWith(fn, id, input)
+		if ran {
+			runs++
+		}
+		if !success {
 			break
 		}
 	}
-	if ran == 0 {
-		return errors.New("no input files found (expected input-*.txt or input_*.txt)")
+	if inputs == 0 {
+		return errors.New("no input text files found")
+	}
+	if runs == 0 {
+		x.Logf("skipped all parts/inputs")
 	}
 	return nil
 }
 
-func runWith(fn RunFn, id, input string) bool {
+func runWith(fn RunFn, id, input string) (ran, success bool) {
 	// run part1
-	return runPartWith(fn, id, false, input) &&
-		// run part2
-		runPartWith(fn, id, true, input)
+	ran1, success := runPartWith(fn, id, false, input)
+	if !success {
+		return ran1, false
+	}
+	// run part2
+	ran2, success := runPartWith(fn, id, true, input)
+	// composite result
+	return (ran1 || ran2), success
+
 }
 
-func runPartWith(fn RunFn, id string, part2 bool, input string) (next bool) {
+func runPartWith(fn RunFn, id string, part2 bool, input string) (ran, success bool) {
 	ts := time.Now()
 	p := "1"
 	if part2 {
@@ -71,16 +84,16 @@ func runPartWith(fn RunFn, id string, part2 bool, input string) (next bool) {
 		}
 		x.PanicPrint(r)
 		result(p, id, ts, false, r)
-		next = false
+		success = false
 	}()
 	value := fn(part2, input)
 	s, ok := value.(string)
 	skip := value == nil || ok && (s == "skip" || s == "not implemented")
-	print := !skip
-	if print {
+	ran = !skip
+	if ran {
 		result(p, id, ts, true, value)
 	}
-	next = true
+	success = true
 	return
 }
 
