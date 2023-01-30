@@ -4,18 +4,15 @@
 
 Puzzler is a Go (golang) program wrapper to assist in developing solutions to various programming puzzles. An internet connection is only required to fetch the questions. Current, it supports:
 
-* Leetcode https://leetcode.com
-* 
-
 ## Leetcode
 
-TODO HARNESS
+TODO https://leetcode.com HARNESS
 
 ## Advent of Code
 
 [Advent of Code](https://adventofcode.com) is a yearly series of programming questions based on the [Advent Calendar](https://en.wikipedia.org/wiki/Advent_calendar). For each day leading up to christmas, there is one question released, and from the second it is released, there is a timer running and a leaderboard showing who solved it first.
 
-1. Install Go 1.18+ from https://go.dev/dl/, or using [my install script](https://github.com/jpillora/dotfiles/blob/main/bin/install-go):
+1. Manually install Go 1.18+ from https://go.dev/dl/, or automatically with [my install script](https://github.com/jpillora/dotfiles/blob/main/bin/install-go):
 
 	```sh
 	curl https://jpillora.com/dotfiles/bin/install-go | bash
@@ -66,18 +63,27 @@ TODO HARNESS
 1. You should see
 
 	```sh
+	go run code.go
 	Created file README.md
 	Created file input-example.txt
-	run(part1, input-eg) returned in 37µs => 42
+	run(part1, input-example) returned in 37µs => 42
 	# update code.go to return 43 and...
 	file changed code.go
-	run(part1, input-eg) returned in 34µs => 43
+	run(part1, input-example) returned in 34µs => 43
 	```
 
-	**Optionally** set `AOC_SESSION` to your adventofcode.com `session` cookie and it will also download your specific user input (`input-user.txt`)
+	**Optionally** set `AOC_SESSION` to your adventofcode.com `session` cookie and it will also download your specific user input (`input-user.txt`). That is:
 
-1. TODO submission
+	* Login with your browser
+	* Open developer tools > Application/Storage > Cookies
+	* Retrieve the contents of `session`
+	* Export it as `AOC_SESSION`
 
+
+#### TODO
+
+* Submission
 	* Requires `AOC_SESSION`
-	* Press `r` to re-run your program
-	* Press `s` to submit your most recent successful result the next part
+	* Press `s` to submit your most recent pending result the next part
+* Press `r` to re-run your program
+* Press `c` to cancel any running program

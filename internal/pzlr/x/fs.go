@@ -63,12 +63,12 @@ func (c *FileCache) Changed(path string) bool {
 	}
 	f, err := os.Open(path)
 	if err != nil {
-		return false
+		return true // failure to check cache reports as a "change"
 	}
 	defer f.Close()
 	h := md5.New()
 	if _, err := io.Copy(h, f); err != nil {
-		return false
+		return true
 	}
 	curr := fileHash{}
 	copy(curr[:], h.Sum(nil))
