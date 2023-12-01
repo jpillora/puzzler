@@ -2,23 +2,21 @@
 
 [![CI](https://github.com/jpillora/puzzler/workflows/CI/badge.svg)](https://github.com/jpillora/puzzler/actions?workflow=CI)
 
-Puzzler is a Go (golang) program wrapper to assist in developing solutions to various programming puzzles. An internet connection is only required to fetch the questions. Current, it supports:
+Puzzler is a Go (golang) program wrapper to assist in developing solutions to various programming puzzles. An internet connection is only required to fetch the questions. Current, it supports Advent of Code.
 
-## Leetcode
+## Quick start
 
-TODO https://leetcode.com HARNESS
+Use this template repo https://github.com/jpillora/aoc-in-go
+
+Alternatively, you can setup manually by following the steps below
 
 ## Advent of Code
 
 [Advent of Code](https://adventofcode.com) is a yearly series of programming questions based on the [Advent Calendar](https://en.wikipedia.org/wiki/Advent_calendar). For each day leading up to christmas, there is one question released, and from the second it is released, there is a timer running and a leaderboard showing who solved it first.
 
-1. Manually install Go 1.18+ from https://go.dev/dl/, or automatically with [my install script](https://github.com/jpillora/dotfiles/blob/main/bin/install-go):
+1. Manually install Go from https://go.dev/dl/ or from brew, etc
 
-	```sh
-	curl https://jpillora.com/dotfiles/bin/install-go | bash
-	```
-
-1. Make an Advent of Code directory/repository (choose your own name) and initialise it as a Go module
+1. Make an AOC solutions directory and initialise it as a Go module
 
 	```
 	mkdir -p my-aoc-solutions
@@ -63,7 +61,7 @@ TODO https://leetcode.com HARNESS
 1. You should see
 
 	```sh
-	go run code.go
+	$ go run code.go
 	Created file README.md
 	Created file input-example.txt
 	run(part1, input-example) returned in 37µs => 42
@@ -72,13 +70,35 @@ TODO https://leetcode.com HARNESS
 	run(part1, input-example) returned in 34µs => 43
 	```
 
-	**Optionally** set `AOC_SESSION` to your adventofcode.com `session` cookie and it will also download your specific user input (`input-user.txt`). That is:
+1. You can find your question in `README.md`, iterate on `code.go` until you get the answer
 
-	* Login with your browser
-	* Open developer tools > Application/Storage > Cookies
-	* Retrieve the contents of `session`
-	* Export it as `AOC_SESSION`
 
+#### AOC Session
+
+**Optionally**, you can set `AOC_SESSION` to your adventofcode.com `session` cookie. That is:
+
+* Login with your browser
+* Open developer tools > Application/Storage > Cookies
+* Retrieve the contents of `session`
+* Export it as `AOC_SESSION`
+
+With your session, `puzzler` will download your user-specifc `input-user.txt` and also update `README.md` with part 2 of the question once you've completed part 1.
+
+Current, your session is NOT used to submit your answer. You still need to login to https://adventofcode.com to submit.
+
+## Leetcode
+
+TODO
+
+* https://leetcode.com
+* Problem: Leetcode's programming model is different from AOC. Its not text in, text out. There are structured questions and code samples and other differences that make it tricky.
+* Goal: Make the harness API work like:
+
+	```go
+	func main() {
+		leetcode.Harness(run)
+	}
+	```
 
 #### TODO
 
