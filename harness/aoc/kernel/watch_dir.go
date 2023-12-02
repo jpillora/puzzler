@@ -20,29 +20,30 @@ func watch(events chan event) error {
 	if err = w.Add("."); err != nil {
 		return err
 	}
-	// process events
+	cache := x.FileCache{}
+	// trigger restart event
 	const restartDelay = 250 * time.Millisecond
 	restartLast := time.Time{}
 	restartPattern := regexp.MustCompile(`(.+\.go|input.+\.txt)`)
-	cache := x.FileCache{}
+	handleRestart := func(event fsnotify.Event) {
+		if time.Since(restartLast) < restartDelay {
+			return
+		}
+		if !cache.Changed(event.Name) {
+			return
+		}
+		x.Logf("file changed %s", event.Name)
+		events <- restart
+		restartLast = time.Now()
+	}
+	// trigger fetch README.md event
+	// TODO: on delete
 	for {
 		select {
 		case event, ok := <-w.Events:
-			if !ok {
-				continue
+			if ok && restartPattern.MatchString(event.Name) {
+				handleRestart(event)
 			}
-			if !restartPattern.MatchString(event.Name) {
-				continue
-			}
-			if time.Since(restartLast) < restartDelay {
-				continue
-			}
-			if !cache.Changed(event.Name) {
-				continue
-			}
-			x.Logf("file changed %s", event.Name)
-			events <- restart
-			restartLast = time.Now()
 		case err, ok := <-w.Errors:
 			if ok {
 				return fmt.Errorf("watcher error: %w", err)

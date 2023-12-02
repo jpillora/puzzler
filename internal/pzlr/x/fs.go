@@ -9,6 +9,11 @@ import (
 	"os"
 )
 
+func Read(file string) string {
+	b, _ := os.ReadFile(file)
+	return string(b)
+}
+
 func MkdirAll(dir string) error {
 	s, err := os.Stat(dir)
 	if errors.Is(err, fs.ErrNotExist) {
@@ -31,7 +36,10 @@ func CreateFunc(path string, fn func() (string, error)) error {
 		if err != nil {
 			return err
 		}
-		if err := os.WriteFile(path, []byte(contents), 0755); err != nil {
+		if contents == "" {
+			return nil
+		}
+		if err := os.WriteFile(path, []byte(contents), 0600); err != nil {
 			return err
 		}
 		Logf("Created file %s", path)

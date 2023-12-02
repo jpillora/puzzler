@@ -1,12 +1,14 @@
 package x
 
 import (
+	"context"
 	"crypto/md5"
 	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 // type Request struct {
@@ -44,7 +46,9 @@ func GetWith(uri string, headers map[string]string) (io.ReadCloser, error) {
 		for k, v := range headers {
 			req.Header.Set(k, v)
 		}
-		resp, err := http.DefaultClient.Do(req)
+		ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+		defer cancel()
+		resp, err := http.DefaultClient.Do(req.WithContext(ctx))
 		if err != nil {
 			return nil, err
 		}

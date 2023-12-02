@@ -4,6 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"strings"
 
 	md "github.com/JohannesKaufmann/html-to-markdown"
 	"github.com/PuerkitoBio/goquery"
@@ -45,5 +46,5 @@ func fetchUserInput(year, day int, session string) (string, error) {
 	if err != nil {
 		return "", errors.New("failed to read aoc input")
 	}
-	return string(b), nil
+	return strings.TrimSpace(string(b)), nil
 }
