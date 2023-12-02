@@ -17,10 +17,17 @@ type RunFn func(part1 bool, input string) any
 func Harness(fn RunFn) error {
 	inputs := 0
 	runs := 0
+	// user can optionally provide PART=1/2 INPUT=example/user
 	doPart := os.Getenv("PART")
 	doInput := os.Getenv("INPUT")
+	// determine if we have part 2, however
+	// we dont know, unless they've provided a session
+	hasSession := os.Getenv("AOC_SESSION") != ""
+	noPart2 := hasSession && os.Getenv("AOC_PART2") != "true"
+	// run each part, with each input
 	for _, part := range []string{"1", "2"} {
-		skipPart := doPart != "" && doPart != part
+		hasPart := part == "1" || !noPart2
+		skipPart := !hasPart || (doPart != "" && doPart != part)
 		for _, kind := range []string{"example", "user"} {
 			skipInput := doInput != "" && doInput != kind
 			file := "input-" + kind
@@ -38,7 +45,6 @@ func Harness(fn RunFn) error {
 			}
 			inputs++
 			if skipPart || skipInput {
-				skip(part, file)
 				continue
 			}
 			ran, success := runPartWith(fn, part, file, input)
@@ -105,15 +111,6 @@ func output(v any) string {
 		out = "\n" + out
 	}
 	return out
-}
-
-func skip(part, file string) {
-	fmt.Print(ansi.Black.String("skip(part"))
-	fmt.Print(ansi.Cyan.String(part))
-	fmt.Print(ansi.Black.String(", "))
-	fmt.Print(ansi.Green.String(file))
-	fmt.Print(ansi.Black.String(") "))
-	fmt.Println()
 }
 
 func result(part, file string, ts time.Time, success bool, value any) {

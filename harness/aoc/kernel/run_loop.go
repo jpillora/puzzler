@@ -8,7 +8,7 @@ import (
 	"github.com/jpillora/puzzler/internal/pzlr/x"
 )
 
-func run(year, day int, events <-chan event) error {
+func run(year, day int, part2 bool, events <-chan event) error {
 	// control process start
 	start := make(chan bool, 1)
 	// singleton process to control
@@ -34,6 +34,7 @@ func run(year, day int, events <-chan event) error {
 			"AOC_HARNESS=1",
 			fmt.Sprintf("AOC_YEAR=%d", year),
 			fmt.Sprintf("AOC_DAY=%d", day),
+			fmt.Sprintf("AOC_PART2=%v", part2),
 		)
 		proc.Stdout = os.Stdout
 		proc.Stderr = os.Stderr

@@ -117,7 +117,7 @@ func Harness() error {
 		return watch(events)
 	})
 	eg.Go(func() error {
-		return run(year, day, events)
+		return run(year, day, part2, events)
 	})
 	// TODO:
 	// eg.Go listen-keyboard-inputs
