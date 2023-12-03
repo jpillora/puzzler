@@ -87,7 +87,7 @@ func Harness() error {
 		file += ".txt"
 		if err := x.CreateFunc(file, func() (string, error) {
 			codeBlock := "```"
-			re := regexp.MustCompile(`(?m)For example.*:\n+` + codeBlock + `\n((.*\n)+?)\n?` + codeBlock + `\n`)
+			re := regexp.MustCompile(`(?:For example|Here is an example).*?\n((?s).*?)\n` + codeBlock + `\n`)
 			matches := re.FindAllStringSubmatch(readme, -1)
 			if len(matches) == 0 {
 				return "", errors.New("no examples found in README.md")
